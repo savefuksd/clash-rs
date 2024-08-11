@@ -33,9 +33,12 @@ pub fn get_outbound_interface() -> Option<OutboundInterface> {
         let mut v4 = None;
         let mut v6 = None;
 
-        // 替代 is_global() 的方法
+        fn is_unique_local(ip: &Ipv6Addr) -> bool {
+            ip.segments()[0] & 0xfe00 == 0xfc00
+        }
+
         fn is_global_v6(ip: &Ipv6Addr) -> bool {
-            !(ip.is_loopback() || ip.is_unspecified() || ip.is_unique_local() || ip.is_multicast())
+            !(ip.is_loopback() || ip.is_unspecified() || is_unique_local(ip) || ip.is_multicast())
         }
 
         for addr in iface.addr.iter() {
