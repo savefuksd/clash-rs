@@ -33,6 +33,11 @@ pub fn get_outbound_interface() -> Option<OutboundInterface> {
         let mut v4 = None;
         let mut v6 = None;
 
+        // 替代 is_global() 的方法
+        fn is_global_v6(ip: &Ipv6Addr) -> bool {
+            !(ip.is_loopback() || ip.is_unspecified() || ip.is_unique_local() || ip.is_multicast())
+        }
+
         for addr in iface.addr.iter() {
             trace!("inspect interface address: {:?} on {}", addr, iface.name);
 
@@ -50,7 +55,7 @@ pub fn get_outbound_interface() -> Option<OutboundInterface> {
                     }
                 }
                 network_interface::Addr::V6(addr) => {
-                    if addr.ip.is_global() && !addr.ip.is_unspecified() {
+                    if is_global_v6(&addr.ip) && !addr.ip.is_unspecified() {
                         v6 = Some(addr.ip);
                     }
                 }
