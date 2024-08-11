@@ -38,7 +38,7 @@ jobs:
           version: "23.x"
 
       - name: Build Win7 binary
-        run: cargo build --target x86_64-pc-windows-msvc
+        run: cargo build --release --target x86_64-pc-windows-msvc
 
       - name: Rename binary
         run: |
